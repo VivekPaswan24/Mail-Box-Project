@@ -1,16 +1,21 @@
-import { useSelector } from 'react-redux';
 import './App.css';
-import MainNavigation from './components/Header/MainNavigation';
 import AuthForm from './components/Layout/AuthForm';
-import Notification from './components/UI/Notification';
+
+import { createBrowserRouter,RouterProvider } from 'react-router-dom';
+import RootLayout from './pages/Root';
+import WelcomePage from './pages/Welcome';
 
 function App() {
-  const notification=useSelector(state=>state.ui.notification);
+
+  const router=createBrowserRouter([
+    {path:'/',element:<RootLayout/>,children:[
+      {index:true,element:<AuthForm/>},
+      {path:'welcome',element:<WelcomePage/>}
+    ]}
+  ])
   return (
     <div className="App">
-      {notification && <Notification status={notification.status} title={notification.title} message={notification.message} />}
-      <MainNavigation/>
-      <AuthForm/>
+      <RouterProvider router={router} />
     </div>
   );
 }

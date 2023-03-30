@@ -1,51 +1,100 @@
 import axios from "axios";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { Card, Form, FloatingLabel, Container, Button } from "react-bootstrap";
 
 import { useDispatch } from "react-redux";
+import { authActions } from "../../store/auth-slice";
 import { uiActions } from "../../store/ui-slice";
+
+import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const dispatch = useDispatch();
+
+  const navigate=useNavigate();
+
+  const [isLogin, setIsLogin] = useState(false);
 
   const emailRef = useRef();
   const passRef = useRef();
   const confRef = useRef();
 
+  const switchHandler = () => {
+    setIsLogin((prevState) => !prevState);
+  };
+
   const submitHandler = async (event) => {
     event.preventDefault();
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passRef.current.value;
-    const enteredConfPassword = confRef.current.value;
-    if (enteredPassword === enteredConfPassword) {
+    if(!isLogin){
+      const enteredConfPassword = confRef.current.value;
+      if (enteredPassword === enteredConfPassword) {
+        dispatch(
+          uiActions.showNotification({
+            status: "pending",
+            title: "Please wait...",
+            message: "Creating an account",
+          })
+        );
+        try {
+          await axios.post(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAKm6F7BwSujkQy2tLaY0UIZl3IEW35jII",
+            {
+              email: enteredEmail,
+              password: enteredPassword,
+              returnSecureToken: true,
+            }
+          );
+          dispatch(
+            uiActions.showNotification({
+              status: "success",
+              title: "Success!",
+              message: "Successfully created an account",
+            })
+          );
+          console.log("User has successfully signed up");
+        } catch (error) {
+          console.log(error);
+          dispatch(
+            uiActions.showNotification({
+              status: "error",
+              title: "Failed!",
+              message: error.response.data.error.message,
+            })
+          );
+        }
+      } else {
+        alert("Password is not match");
+      }
+    }else{
       dispatch(
         uiActions.showNotification({
           status: "pending",
           title: "Please wait...",
-          message: "Creating an account",
+          message: "Cheking your email and password",
+        }))
+      try{
+        const response=await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAKm6F7BwSujkQy2tLaY0UIZl3IEW35jII',{
+          email:enteredEmail,
+          password:enteredPassword,
+          returnSecureToken:true
         })
-      );
-      try {
-        await axios.post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAKm6F7BwSujkQy2tLaY0UIZl3IEW35jII",
-          {
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }
-        );
+        console.log(response)
+        localStorage.setItem('token',response.data.idToken);
+        dispatch(authActions.login(response.data.idToken))
         dispatch(
           uiActions.showNotification({
             status: "success",
             title: "Success!",
-            message: "Successfully created an account",
+            message: "Successfully loggedIn",
           })
         );
-        console.log("User has successfully signed up");
-      } catch (error) {
-        console.log(error);
+        navigate('/welcome')
+      }catch(error){
+        console.log(error)
         dispatch(
           uiActions.showNotification({
             status: "error",
@@ -54,8 +103,6 @@ const AuthForm = () => {
           })
         );
       }
-    } else {
-      alert("Password is not match");
     }
     setTimeout(() => {
       dispatch(uiActions.closeNotification());
@@ -73,7 +120,7 @@ const AuthForm = () => {
       >
         <Card.Body>
           <Card.Title className="text-center text-light fw-bolder mb-3">
-            SignUp
+            {isLogin ? "Login" : "SignUp"}
           </Card.Title>
           <Form onSubmit={submitHandler}>
             <FloatingLabel label="Email address" className="mb-3">
@@ -95,15 +142,17 @@ const AuthForm = () => {
                 ref={passRef}
               />
             </FloatingLabel>
-            <FloatingLabel label="Confirm Password" className="mb-3">
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                className="rounded-pill"
-                required
-                ref={confRef}
-              />
-            </FloatingLabel>
+            {!isLogin && (
+              <FloatingLabel label="Confirm Password" className="mb-3">
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  className="rounded-pill"
+                  required
+                  ref={confRef}
+                />
+              </FloatingLabel>
+            )}
             <div className="d-grid gap-2">
               <Button
                 variant="outline-info"
@@ -111,11 +160,23 @@ const AuthForm = () => {
                 className="rounded-pill"
                 type="submit"
               >
-                SignUp
+                {isLogin ? "Login" : "SignUp"}
               </Button>
             </div>
           </Form>
         </Card.Body>
+        <button
+          onClick={switchHandler}
+          style={{
+            backgroundColor: "transparent",
+            border: "none",
+            color: "#0dcaf0",
+          }}
+        >
+          {!isLogin
+            ? "Have an account? Login"
+            : "Don't have an account? SignUp"}
+        </button>
       </Card>
     </Container>
   );
