@@ -8,19 +8,19 @@ const authSlice = createSlice({
     isLoggedIn: token ? true : false,
     token: token ? token : null,
   },
-  reducers:{
-    login(state,action){
-        state.isLoggedIn=true;
-        state.token=action.payload
+  reducers: {
+    login(state, action) {
+      state.isLoggedIn = true;
+      state.token = action.payload;
     },
-    logout(state){
-        state.isLoggedIn=false;
-        state.token=null
-        localStorage.removeItem('token')
-    }
-  }
+    logout(state) {
+      state.isLoggedIn = false;
+      state.token = null;
+      localStorage.removeItem("token");
+    },
+  },
 });
 
-export const authActions=authSlice.actions;
+export const authActions = authSlice.actions;
 
-export default authSlice.reducer
+export default authSlice.reducer;

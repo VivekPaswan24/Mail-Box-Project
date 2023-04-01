@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 const AuthForm = () => {
   const dispatch = useDispatch();
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(false);
 
@@ -29,7 +29,7 @@ const AuthForm = () => {
     event.preventDefault();
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passRef.current.value;
-    if(!isLogin){
+    if (!isLogin) {
       const enteredConfPassword = confRef.current.value;
       if (enteredPassword === enteredConfPassword) {
         dispatch(
@@ -69,22 +69,27 @@ const AuthForm = () => {
       } else {
         alert("Password is not match");
       }
-    }else{
+    } else {
       dispatch(
         uiActions.showNotification({
           status: "pending",
           title: "Please wait...",
           message: "Cheking your email and password",
-        }))
-      try{
-        const response=await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAKm6F7BwSujkQy2tLaY0UIZl3IEW35jII',{
-          email:enteredEmail,
-          password:enteredPassword,
-          returnSecureToken:true
         })
-        console.log(response)
-        localStorage.setItem('token',response.data.idToken);
-        dispatch(authActions.login(response.data.idToken))
+      );
+      try {
+        const response = await axios.post(
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAKm6F7BwSujkQy2tLaY0UIZl3IEW35jII",
+          {
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }
+        );
+        console.log(response);
+        localStorage.setItem("token", response.data.idToken);
+        localStorage.setItem("email", response.data.email);
+        dispatch(authActions.login(response.data.idToken));
         dispatch(
           uiActions.showNotification({
             status: "success",
@@ -92,9 +97,9 @@ const AuthForm = () => {
             message: "Successfully loggedIn",
           })
         );
-        navigate('/welcome')
-      }catch(error){
-        console.log(error)
+        navigate("/welcome");
+      } catch (error) {
+        console.log(error);
         dispatch(
           uiActions.showNotification({
             status: "error",
@@ -116,6 +121,7 @@ const AuthForm = () => {
           backgroundColor: "transparent",
           border: "none",
           marginTop: "15vh",
+          color: "black",
         }}
       >
         <Card.Body>

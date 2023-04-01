@@ -1,5 +1,11 @@
-const WelcomePage=()=>{
-    return <h1>Welcome to your mail box</h1>
+import ComposeMail from "../components/ComposeMail/ComposeMail";
+
+const WelcomePage = () => {
+  return (
+    <>
+      <ComposeMail />
+    </>
+  );
 };
 
 export default WelcomePage;
