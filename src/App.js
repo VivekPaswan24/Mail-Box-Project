@@ -3,16 +3,15 @@ import AuthForm from "./components/Layout/AuthForm";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./pages/Root";
-import WelcomePage from "./pages/Welcome";
+import HomePage from "./pages/Home";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getMailData, sendMailData } from "./store/mail-slice";
+import { useDispatch } from "react-redux";
+import { getMailData } from "./store/mail-slice";
 
-let initial = true;
 
 function App() {
-  const mail = useSelector((state) => state.mail);
-  const dispatch = useDispatch();
+
+  const dispatch=useDispatch()
 
   const router = createBrowserRouter([
     {
@@ -20,19 +19,15 @@ function App() {
       element: <RootLayout />,
       children: [
         { index: true, element: <AuthForm /> },
-        { path: "welcome", element: <WelcomePage /> },
+        { path: "home", element: <HomePage/> },
       ],
     },
   ]);
 
-  useEffect(() => {
-    if (initial === true) {
-      initial = false;
-      dispatch(getMailData());
-      return;
-    }
-    dispatch(sendMailData(mail));
-  }, [mail, dispatch]);
+  useEffect(()=>{
+    dispatch(getMailData());
+  },[dispatch])
+
   return (
     <div className="App">
       <RouterProvider router={router} />

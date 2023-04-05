@@ -6,6 +6,10 @@ import { Form, Col, Row, Container, Button } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { mailActions } from "../../store/mail-slice";
+import { uiActions } from "../../store/ui-slice";
+
+import axios from "axios";
+
 
 const ComposeMail = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -19,22 +23,54 @@ const ComposeMail = () => {
     setEditorState(editorState);
   };
 
-  const mailSubmitHandler = (event) => {
+  const mailSubmitHandler = async(event) => {
     event.preventDefault();
-    const mailData = {
+    const mail = {
       from: localStorage.getItem("email"),
       to: emailInputRef.current.value,
       subject: subjectRef.current.value,
       message: editorState.getCurrentContent().getPlainText(),
     };
+    dispatch(
+      uiActions.showNotification({
+        status: "pending",
+        title: "Sending...",
+        message: "Please Wait..Sending data.",
+      })
+    );
+    try {
+      const response=await axios.post(
+        "https://mail-box-project-c3098-default-rtdb.firebaseio.com/mail.json",
+        { mail }
+      );
+      console.log(response)
+      dispatch(mailActions.sentBox({...mail,id:response.data.name}));
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "Success",
+          message: "Successfully send data.",
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        uiActions.showNotification({
+          status: "error",
+          title: "Failed!",
+          message: error.response.data.error.message,
+        })
+      );
+    }
+    setTimeout(() => {
+      dispatch(uiActions.closeNotification());
+    }, 3000);
 
-    dispatch(mailActions.sentBox(mailData));
   };
   return (
     <Container
       style={{
         backgroundColor: "white",
-        marginTop: "5vh",
         color: "black",
         padding: "5vh",
         minHeight: "80vh",

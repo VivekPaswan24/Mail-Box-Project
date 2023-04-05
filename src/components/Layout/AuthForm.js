@@ -97,7 +97,7 @@ const AuthForm = () => {
             message: "Successfully loggedIn",
           })
         );
-        navigate("/welcome");
+        navigate("/home");
       } catch (error) {
         console.log(error);
         dispatch(
