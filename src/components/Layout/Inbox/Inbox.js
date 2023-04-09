@@ -1,14 +1,11 @@
 import { Col, Row, Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import InboxMail from "./InboxMail";
-
+import { useSelector } from "react-redux";
 const Inbox = () => {
-  const inbox = useSelector((state) => state.mail.inbox);
-  const sentbox = useSelector((state) => state.mail.sentbox);
-  console.log(sentbox)
-  console.log('inbox',inbox)
+
+  const inbox=useSelector(state=>state.mail.inBox)
   return (
-    <Container style={{ backgroundColor: "white", color: "black" }}>
+    <Container style={{ backgroundColor: "white", color: "black",minHeight:'100vh',minWidth:'80vw' }}>
       <Row>
         <Col sm="4">
           <h3>From</h3>
@@ -18,9 +15,10 @@ const Inbox = () => {
         </Col>
       </Row>
       <hr/>
-      {inbox.map((ele)=><InboxMail key={ele.id} from={ele.from} subject={ele.subject} />)}
+      {inbox.map((ele)=><InboxMail key={ele.id} id={ele.id} from={ele.from} subject={ele.subject} isRead={ele.firstTime} />)}
     </Container>
   );
 };
 
 export default Inbox;
+
