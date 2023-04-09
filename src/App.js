@@ -32,6 +32,9 @@ function App() {
     },
   ]);
 
+  // setInterval(()=>{
+  //   dispatch(getMail())
+  // },2000)
   useEffect(()=>{
     dispatch(getMail())
   },[dispatch,auth])
