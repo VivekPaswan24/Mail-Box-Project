@@ -20,6 +20,9 @@ const mailSlice=createSlice({
     updateInbox(state,action){
       const existingMailIndex=state.inBox.findIndex((ele)=>ele.id===action.payload.id);
       state.inBox[existingMailIndex]=action.payload
+    },
+    deleteMail(state,action){
+      state.inBox=state.inBox.filter((ele)=>ele.id!==action.payload)
     }
   }
 });
@@ -64,6 +67,18 @@ export const getMail=()=>{
   }catch(error){
     console.log(error)
   }
+  }
+}
+
+export const deleteMail=(id)=>{
+  return async(dispatch)=>{
+    const email=localStorage.getItem('email').replace('@','').replace('.','');
+    try{
+      await axios.delete(`https://mail-box-project-c3098-default-rtdb.firebaseio.com/${email}/${id}.json`);
+      dispatch(mailActions.deleteMail(id))
+    }catch(error){
+      console.log(error)
+    }
   }
 }
 

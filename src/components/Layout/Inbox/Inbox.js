@@ -5,13 +5,18 @@ const Inbox = () => {
 
   const inbox=useSelector(state=>state.mail.inBox)
   return (
-    <Container style={{ backgroundColor: "white", color: "black",minHeight:'100vh',minWidth:'80vw' }}>
+    <Container style={{ backgroundColor: "white", color: "black",minHeight:'100vh',minWidth:'75vw' }}>
       <Row>
+        <Col sm='1'>
+        
+        </Col>
         <Col sm="4">
           <h3>From</h3>
         </Col>
-        <Col sm="8">
+        <Col sm="5">
           <h3>Subject</h3>
+        </Col>
+        <Col sm='2'>
         </Col>
       </Row>
       <hr/>

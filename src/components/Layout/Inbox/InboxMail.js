@@ -1,9 +1,9 @@
 import axios from "axios";
 import React from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col,Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link,} from "react-router-dom";
-import { mailActions } from "../../../store/mail-slice";
+import { deleteMail, mailActions } from "../../../store/mail-slice";
 
 const InboxMail = (props) => {
 
@@ -32,21 +32,31 @@ const InboxMail = (props) => {
     }
     console.log('clicked')
   }
+
+  const deleteMailHandler=()=>{
+    dispatch(deleteMail(props.id))
+  }
+
   return (
     <div className="border-bottom">
       <Link to={`/home/inbox/${props.id}`} style={{textDecoration:'none',color:'black'}}>
-      <Row style={{cursor:'pointer'}} onClick={showFullMessageHandler}>
-        <Col sm="4">
-          <div className="d-flex">
+      <Row style={{cursor:'pointer'}} >
+        <Col sm='1'>
             {props.isRead && <p>&#128309;</p>}
+        </Col>
+        <Col sm="4" onClick={showFullMessageHandler}>
+          <div className="d-flex">
             <p>{props.from}</p>
           </div>
         </Col>
-        <Col sm="8">
+        <Col sm="5">
           <p>{props.subject}</p>
+        </Col>
+        <Col sm='2'>
         </Col>
       </Row>
       </Link>
+        <Button variant='outline-danger' onClick={deleteMailHandler}>Delete Mail</Button>
     </div>
   );
 };
