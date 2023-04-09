@@ -10,6 +10,7 @@ import MailMessage from "./components/Layout/Inbox/MailMessage";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMail } from "./store/mail-slice";
+import Sentbox from "./components/Layout/Sentbox/Sentbox";
 
 function App() {
   const auth=useSelector(state=>state.auth)
@@ -25,7 +26,7 @@ function App() {
           {index: true,element: <ComposeMail/>},
           {path:'inbox',element:<Inbox/>},
           {path:'inbox/:mailId',element:<MailMessage/>},
-          {path:'/home/sentbox'}
+          {path:'/home/sentbox',element:<Sentbox/>}
         ] },
       ],
     },

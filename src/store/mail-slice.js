@@ -55,14 +55,19 @@ export const getMail=()=>{
   try{
     const response=await axios.get(`https://mail-box-project-c3098-default-rtdb.firebaseio.com/${newEmail}.json`)
     let loadedInboxData=[];
+    let loadedSentBox=[]
     const data=response.data;
     for(const key in data){
       if(data[key].mail.to===email){
         loadedInboxData.push({...data[key].mail,id:key})
       }
+      if(data[key].mail.from===email){
+        loadedSentBox.push({...data[key].mail,id:key})
+      }
     }
     console.log(loadedInboxData);
     dispatch(mailActions.replaceInBox(loadedInboxData))
+    dispatch(mailActions.replaceSentBox(loadedSentBox))
 
   }catch(error){
     console.log(error)

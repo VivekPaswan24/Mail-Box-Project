@@ -3,12 +3,20 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 const SideBar = () => {
   const inbox=useSelector(state=>state.mail.inBox)
+  const sentbox=useSelector(state=>state.mail.sentBox)
 
   const totalNumberOfUnreadMessage=inbox.reduce((currNumber,ele)=>{
     if(ele.firstTime===true){
      currNumber=currNumber+1
     }
     return currNumber
+  },0)
+
+  const totalSentMailUnread=sentbox.reduce((currNum,ele)=>{
+    if(ele.firstTime===true){
+      currNum=currNum+1
+    }
+    return currNum
   },0)
 
   return (
@@ -23,7 +31,7 @@ const SideBar = () => {
             <NavLink to="/home/inbox" style={{color:'black',textDecoration:'none',fontSize:'1.3rem'}}>Inbox</NavLink> <Badge bg="info">{totalNumberOfUnreadMessage} Unread</Badge>
         </Container>
         <Container className="d-flex justify-content-center">
-           <NavLink to="/home/sentbox" style={{color:'black',textDecoration:'none',fontSize:'1.3rem'}}>Sent</NavLink>  <Badge bg="info">0</Badge>
+           <NavLink to="/home/sentbox" style={{color:'black',textDecoration:'none',fontSize:'1.3rem'}}>Sent</NavLink>  <Badge bg="info">{totalSentMailUnread} Unread</Badge>
         </Container>
       </Stack>
     </Container>
