@@ -5,7 +5,8 @@ import { EditorState } from "draft-js";
 import { Form, Col, Row, Container, Button } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addData, } from "../../store/mail-slice";
+import useHttp from "../../Hooks/use-http";
+import { mailActions } from "../../store/mail-slice";
 
 
 const ComposeMail = () => {
@@ -15,6 +16,8 @@ const ComposeMail = () => {
   const subjectRef = useRef();
 
   const dispatch = useDispatch();
+
+  const sendRequest=useHttp();
 
   const editorHandler = (editorState) => {
     setEditorState(editorState);
@@ -31,7 +34,10 @@ const ComposeMail = () => {
       message: editorState.getCurrentContent().getPlainText(),
       firstTime:true
     };
-    dispatch(addData(mail))
+    const addMail=(data)=>{
+      dispatch(mailActions.sentBox({...mail,id:data.name}))
+    }
+    sendRequest({url:'https://mail-box-project-c3098-default-rtdb.firebaseio.com',methode:'post',mail:mail},addMail)
   };
   return (
     <Container
